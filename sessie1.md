@@ -26,7 +26,7 @@ Let's hold off on exploring corpus and document-term matrix objects until Chapte
 
 Emily Dickinson wrote some lovely text in her time.
 
-```{r text}
+```r 
 text <- c("Because I could not stop for Death -",
           "He kindly stopped for me -",
           "The Carriage held but just Ourselves -",
