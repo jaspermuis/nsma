@@ -36,7 +36,7 @@ text
 
 This is a typical character vector that we might want to analyze. In order to turn it into a tidy text dataset, we first need to put it into a data frame.
 
-```{r text_df, dependson = "text"}
+```r 
 library(dplyr)
 text_df <- tibble(line = 1:4, text = text)
 text_df
