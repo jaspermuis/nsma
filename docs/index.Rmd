@@ -1,0 +1,153 @@
+
+
+```markdown
+---
+title: "Module 1: Tekst als Data"
+author: "NSMA2023"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# MODULE 1: Tekst als Data
+
+In dit eerste tutorial gaan we heel eenvoudig een tekstbestand (een zogeheten “corpus”) maken en een grafiek maken van de woordfrequentie. 
+
+### Tekst als Data: 
+
+- Verschil begrijpen tussen numerieke data en tekst (character string).
+- Construeren en verkennen van verschillende soorten tekstbestanden (corpus, tidy text format, document feature matrix).
+- Tokenization: het opknippen van teksten in kleinere eenheden (meestal woorden).
+- Eerste kennismaking met het opschonen van tekstuele data.
+- Het maken van een eenvoudige plot met de meest frequente woorden.
+
+#### Literatuur:
+
+Sectie 1.1 t/m 1.4 (Hoofdstuk 1: The tidy text format) uit: Silge J. & Robinson D. (2017). *Text Mining with R: A Tidy Approach*. O'Reilly Media. Open access: [https://www.tidytextmining.com/index.html](https://www.tidytextmining.com/index.html)
+
+## 1.1 Tekst als Data
+
+Allereerst bekijken we het verschil tussen hoe R getallen en tekst behandelt. Schrijf een gedicht met minstens vier regels. Maak hier een variabele (object) van die ‘tekst’ heet. De regels worden onderscheiden met een komma.
+
+```r
+tekst <- c("Het regent en het is november:",
+           "Weer keert het najaar en belaagt",
+           "Het hart dat droef maar steeds gewender", 
+           "Zijn heimelijke pijnen draagt.")
+```
+
+We krijgen een foutmelding van R. Dit komt doordat de regels als afzonderlijke elementen behandeld moeten worden en dus tussen aanhalingstekens moeten staan.
+
+Gebruik de `class()` functie om het datatype van de variabele te controleren:
+
+```r
+class(tekst)
+```
+
+### Maak een Variabele met Aantal Regels
+
+Maak een variabele genaamd `regel` die bestaat uit het aantal regels van jouw gedicht.
+
+```r
+regel <- c(1, 2, 3, 4)
+```
+
+Indien je een reeks getallen wilt maken, gebruik de volgende R-code:
+
+```r
+regel <- 1:100
+```
+
+### Data Structuur: Corpus
+
+We voegen de twee variabelen samen in een `data.frame`.
+
+```r
+gedicht_df <- data.frame(regel, tekst)
+View(gedicht_df)
+str(gedicht_df)
+```
+
+We kunnen ook een `tibble` gebruiken:
+
+```r
+library(tidyverse)
+gedicht_tib <- tibble(regel, tekst)
+View(gedicht_tib)
+str(gedicht_tib)
+```
+
+### Document Feature Matrix (DFM)
+
+Gebruik het `quanteda`-pakket om een corpus te maken:
+
+```r
+install.packages("quanteda")
+library(quanteda)
+
+corp_gedicht <- corpus(gedicht_tib, text_field = "tekst")
+print(corp_gedicht)
+```
+
+Splits de tekst in tokens:
+
+```r
+toks_gedicht <- tokens(corp_gedicht, remove_punct = TRUE)
+print(toks_gedicht)
+```
+
+Converteer naar een Document Feature Matrix:
+
+```r
+dfm_gedicht <- dfm(toks_gedicht)
+print(dfm_gedicht)
+```
+
+### Tidy Text Format
+
+Gebruik het `tidytext`-pakket om een tidy text format te maken:
+
+```r
+install.packages("tidytext")
+library(tidytext)
+
+gedicht_tidy <- gedicht_tib %>%
+  unnest_tokens(woord, tekst)
+gedicht_tidy
+```
+
+Visualiseer de woordfrequentie:
+
+```r
+gedicht_tidy %>%
+  ggplot(aes(woord)) + 
+  geom_bar() + 
+  coord_flip()
+```
+
+Bereken en visualiseer de relatieve frequentie:
+
+```r
+freq_woorden <- gedicht_tidy %>%
+  count(woord, sort = TRUE)
+
+freq_woorden %>%
+  mutate(woord = reorder(woord, n)) %>%
+  ggplot(aes(n, woord)) +
+  geom_col()
+```
+
+### Opdracht Module 1
+
+1. Maak een nieuwe figuur waarbij je de proportie op de x-as zet in plaats van ‘n’ (de absolute count).
+2. Maak een nieuwe figuur waarin je alleen de woorden weergeeft die meer dan één keer voorkomen.
+
+### Einde van de Tutorial
+```
+
+### How to Use the R Markdown File
+
+1. **Copy and Paste**: Copy the above content into a new R Markdown file (`.Rmd`) in RStudio.
+2. **Save the File**: Save the file with a meaningful name, such as `module1-tekst-als-data.Rmd`.
+3. **Render the File**: Click the "Knit" button in RStudio to render the file to HTML, PDF, or Word format.
+
+Would you like me to help you with any additional formatting or content adjustments?
